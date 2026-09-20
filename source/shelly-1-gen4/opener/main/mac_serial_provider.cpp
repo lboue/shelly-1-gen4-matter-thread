@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <platform/ConfigurationManager.h>
 #include <platform/DeviceInstanceInfoProvider.h>
-#include <platform/GenericDeviceInstanceInfoProvider.h>
+#include <platform/internal/GenericDeviceInstanceInfoProvider.h>
 #include <platform/ESP32/ESP32Config.h>
 
 using namespace chip::DeviceLayer;
@@ -12,10 +12,13 @@ using namespace chip::DeviceLayer;
 namespace {
 
 class MacSerialInfoProvider
-    : public GenericDeviceInstanceInfoProvider<Internal::ESP32Config>
+    : public Internal::GenericDeviceInstanceInfoProvider<Internal::ESP32Config>
 {
 public:
-    MacSerialInfoProvider() : GenericDeviceInstanceInfoProvider(ConfigurationMgr()) {}
+    MacSerialInfoProvider()
+        : Internal::GenericDeviceInstanceInfoProvider<Internal::ESP32Config>(
+              ConfigurationManagerImpl::GetDefaultInstance())
+    {}
 
     CHIP_ERROR GetSerialNumber(char *buf, size_t bufSize) override
     {
